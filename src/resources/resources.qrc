@@ -1,0 +1,9 @@
+<RCC>
+	<qresource prefix="/resources">
+		<file>images/close.png</file>
+		<file>images/config.png</file>
+		<file>images/edit.png</file>
+		<file>images/open.png</file>
+		<file>images/save.png</file>
+	</qresource>
+</RCC>
