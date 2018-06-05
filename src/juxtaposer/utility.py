@@ -6,7 +6,7 @@ import os
 
 def read_csv(file_name):
 	table = []
-	with open(file_name, "r") as f:
+	with open(file_name, "r", encoding="utf-8") as f:
 		reader = csv.reader(f)
 		for row in reader:
 			table.append(row)
@@ -14,7 +14,7 @@ def read_csv(file_name):
 
 
 def save(table, file_name):
-	with open(file_name, "w") as f:
+	with open(file_name, "w", encoding="utf-8", newline="") as f:
 		writer = csv.writer(f)
 		for row in table:
 			writer.writerow(row)
@@ -46,13 +46,15 @@ def swap_rows(table, index1, index2, start, end):
 
 
 def juxtapose(table, column1, column2, start2, end2):
+	last_index = 0
 	for index1, row1 in enumerate(table):
 		if column1 < 0 or column1 >= len(row1) or column1 < 0 or column2 >= len(row1):
 			continue
 		name = row1[column1]
-		index2 = find_row(table, name, column2, index1)
+		index2 = find_row(table, name, column2, last_index)
 		if index2 < 0 or index1 == index2:
 			continue
+		last_index += 1
 		swap_rows(table, index1, index2, start2, end2)
 
 

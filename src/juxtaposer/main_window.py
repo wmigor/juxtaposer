@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
 	def create_table_item(word):
 		item = QTableWidgetItem()
 		item.setData(Qt.DisplayRole, word)
-		item.setFlags(Qt.ItemIsEnabled)
+		item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
 		return item
 
 	def _juxtapose(self):
