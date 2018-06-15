@@ -56,6 +56,8 @@ class MainWindow(QMainWindow):
 	def _load_file(self, file_name):
 		table = utility.read_csv(file_name, self._config.encoding)
 		self.set_table(table)
+		self._ui.table_widget.resizeColumnsToContents()
+		self._ui.table_widget.resizeRowsToContents()
 
 	def set_table(self, table):
 		self._ui.table_widget.setRowCount(len(table))
