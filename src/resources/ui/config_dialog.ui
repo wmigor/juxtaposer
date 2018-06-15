@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>179</height>
+    <width>404</width>
+    <height>251</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -55,6 +55,50 @@
      </item>
      <item row="3" column="1">
       <widget class="QSpinBox" name="sb_end"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="l_encoding">
+       <property name="text">
+        <string>Кодировка</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="l_min_ratio">
+       <property name="text">
+        <string>Процент совпадения</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QComboBox" name="cb_encoding">
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+       <item>
+        <property name="text">
+         <string>cp1251</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>utf-8</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QSpinBox" name="sb_min_ratio">
+       <property name="suffix">
+        <string> %</string>
+       </property>
+       <property name="maximum">
+        <number>100</number>
+       </property>
+       <property name="value">
+        <number>50</number>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

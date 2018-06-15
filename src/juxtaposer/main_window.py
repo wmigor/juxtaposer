@@ -51,10 +51,10 @@ class MainWindow(QMainWindow):
 		if not ext:
 			file_name += '.csv'
 		table = self._read_table()
-		utility.save(table, file_name)
+		utility.save(table, file_name, self._config.encoding)
 
 	def _load_file(self, file_name):
-		table = utility.read_csv(file_name)
+		table = utility.read_csv(file_name, self._config.encoding)
 		self.set_table(table)
 
 	def set_table(self, table):
@@ -75,8 +75,10 @@ class MainWindow(QMainWindow):
 
 	def _juxtapose(self):
 		table = self._read_table()
-		utility.juxtapose(table, self._config.column1, self._config.column2, self._config.start, self._config.end)
-		utility.push_different(table, self._config.column1, self._config.column2)
+		utility.juxtapose(
+			table, self._config.column1, self._config.column2, self._config.start, self._config.end,
+			self._config.min_ratio)
+		utility.push_different(table, self._config.column1, self._config.column2, self._config.min_ratio)
 		self.set_table(table)
 
 	def _read_table(self):

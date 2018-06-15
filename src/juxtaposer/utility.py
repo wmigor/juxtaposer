@@ -2,32 +2,38 @@
 
 import csv
 import os
+from difflib import SequenceMatcher
 
 
-def read_csv(file_name):
+def read_csv(file_name, encoding):
 	table = []
-	with open(file_name, "r", encoding="utf-8") as f:
+	with open(file_name, "r", encoding=encoding) as f:
 		reader = csv.reader(f)
 		for row in reader:
 			table.append(row)
 	return table
 
 
-def save(table, file_name):
-	with open(file_name, "w", encoding="utf-8", newline="") as f:
+def save(table, file_name, encoding):
+	with open(file_name, "w", encoding=encoding, newline="") as f:
 		writer = csv.writer(f)
 		for row in table:
 			writer.writerow(row)
 
 
-def find_row(table, name, column, start_index):
+def find_row(table, name, column, start_index, min_ratio):
+	index = -1
+	max_ratio = 0
 	for i in range(start_index, len(table)):
 		row = table[i]
 		if column >= len(row):
 			continue
-		if name == row[column]:
-			return i
-	return -1
+		matcher = SequenceMatcher(None, name.lower(), row[column].lower())
+		ratio = matcher.ratio()
+		if ratio > max_ratio and ratio > min_ratio:
+			index = i
+			max_ratio = ratio
+	return index
 
 
 def swap_rows(table, index1, index2, start, end):
@@ -45,27 +51,29 @@ def swap_rows(table, index1, index2, start, end):
 		row1[start + i] = value
 
 
-def juxtapose(table, column1, column2, start2, end2):
+def juxtapose(table, column1, column2, start2, end2, min_ratio):
 	last_index = 0
 	for index1, row1 in enumerate(table):
 		if column1 < 0 or column1 >= len(row1) or column1 < 0 or column2 >= len(row1):
 			continue
 		name = row1[column1]
-		index2 = find_row(table, name, column2, last_index)
+		index2 = find_row(table, name, column2, last_index, min_ratio)
 		if index2 < 0 or index1 == index2:
 			continue
 		last_index += 1
 		swap_rows(table, index1, index2, start2, end2)
 
 
-def push_different(table, column1, column2):
+def push_different(table, column1, column2, min_ratio):
 	i = 0
 	count = len(table)
 	for step in range(count):
 		row = table[i]
 		if column1 < 0 or column2 < 0 or column1 >= len(row) or column2 > len(row):
 			continue
-		if row[column1] != row[column2]:
+		matcher = SequenceMatcher(None, row[column1].lower(), row[column2].lower())
+		ratio = matcher.ratio()
+		if ratio < min_ratio:
 			table.append(table.pop(i))
 		else:
 			i += 1
