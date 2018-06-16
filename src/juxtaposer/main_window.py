@@ -3,9 +3,11 @@
 import os
 
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QFileDialog, QMessageBox
+from PyQt5.QtGui import QColor
 
 from juxtaposer import utility
+from juxtaposer.table import Table
 from juxtaposer.ui.main_window import Ui_MainWindow
 from juxtaposer.config import Config
 from juxtaposer.config_dialog import ConfigDialog
@@ -13,6 +15,9 @@ from juxtaposer.config_dialog import ConfigDialog
 
 class MainWindow(QMainWindow):
 	Filter = u"CSV Таблицы *.csv (*.csv);;Все файлы *(*)"
+	Red = QColor(255, 200, 200)
+	Yellow = QColor(255, 255, 200)
+	Green = QColor(200, 255, 200)
 
 	def __init__(self, *args, **kwargs):
 		QMainWindow.__init__(self, *args, **kwargs)
@@ -25,6 +30,8 @@ class MainWindow(QMainWindow):
 			self.restoreGeometry(self._config.window_geometry)
 		if self._config.window_state:
 			self.restoreState(self._config.window_state)
+		self._table = Table()
+		self._is_juxtaposed = False
 
 	def _connect_signals(self):
 		self._ui.act_open.triggered.connect(self.show_open_dialog)
@@ -50,23 +57,42 @@ class MainWindow(QMainWindow):
 		ext = os.path.splitext(file_name.lower())[1]
 		if not ext:
 			file_name += '.csv'
-		table = self._read_table()
-		utility.save(table, file_name, self._config.encoding)
+		data = self._table.get_data()
+		utility.save(data, file_name, self._config.encoding)
 
 	def _load_file(self, file_name):
-		table = utility.read_csv(file_name, self._config.encoding)
-		self.set_table(table)
-		self._ui.table_widget.resizeColumnsToContents()
-		self._ui.table_widget.resizeRowsToContents()
+		try:
+			data = utility.read_csv(file_name, self._config.encoding)
+			self._table.set_data(data)
+			self._update_table()
+			self._ui.table_widget.resizeColumnsToContents()
+			self._ui.table_widget.resizeRowsToContents()
+			self._is_juxtaposed = False
+		except Exception as e:
+			print(e)
+			message = "Не удалось открыть файл. Попробуйте в настройках изменить кодировку"
+			QMessageBox.critical(self, self.windowTitle(), message)
 
-	def set_table(self, table):
-		self._ui.table_widget.setRowCount(len(table))
-		column_count = len(table[0]) if table else 0
+	def _update_table(self):
+		self._ui.table_widget.setRowCount(len(self._table.rows))
+		column_count = len(self._table.rows[0]) if self._table.rows else 0
 		self._ui.table_widget.setColumnCount(column_count)
-		for row, words in enumerate(table):
+		for row, words in enumerate(self._table.rows):
+			color = self.get_color_by_ratio(words.ratio)
+			tool_tip = "Совпадение {0}%".format(int(words.ratio * 100))
 			for column, word in enumerate(words):
 				item = self.create_table_item(word)
+				if self._is_juxtaposed:
+					item.setToolTip(tool_tip)
+					item.setData(Qt.BackgroundColorRole, color)
 				self._ui.table_widget.setItem(row, column, item)
+
+	def get_color_by_ratio(self, ratio):
+		if ratio >= 1:
+			return self.Green
+		if ratio < self._config.min_ratio:
+			return self.Red
+		return self.Yellow
 
 	@staticmethod
 	def create_table_item(word):
@@ -76,12 +102,11 @@ class MainWindow(QMainWindow):
 		return item
 
 	def _juxtapose(self):
-		table = self._read_table()
-		utility.juxtapose(
-			table, self._config.column1, self._config.column2, self._config.start, self._config.end,
-			self._config.min_ratio)
-		utility.push_different(table, self._config.column1, self._config.column2, self._config.min_ratio)
-		self.set_table(table)
+		self._table.juxtapose(
+			self._config.column1, self._config.column2, self._config.start, self._config.end, 0,
+			self._config.excepted_words)
+		self._is_juxtaposed = True
+		self._update_table()
 
 	def _read_table(self):
 		table = []

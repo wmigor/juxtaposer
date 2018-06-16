@@ -21,6 +21,7 @@ class ConfigDialog(QDialog):
 		self._ui.sb_end.setValue(self._config.end + 1)
 		self._ui.sb_min_ratio.setValue(self._config.min_ratio * 100)
 		self._ui.cb_encoding.setCurrentText(self._config.encoding)
+		self._ui.te_excepted_words.setText("\n".join(self._config.excepted_words))
 
 	def read_values(self):
 		self._config.column1 = self._ui.sb_column1.value() - 1
@@ -29,3 +30,4 @@ class ConfigDialog(QDialog):
 		self._config.end = self._ui.sb_end.value() - 1
 		self._config.min_ratio = self._ui.sb_min_ratio.value() / 100.0
 		self._config.encoding = self._ui.cb_encoding.currentText()
+		self._config.excepted_words = self._ui.te_excepted_words.toPlainText().splitlines()

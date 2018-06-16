@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>251</height>
+    <width>366</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,9 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QFormLayout" name="formLayout_2">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="l_column1">
        <property name="text">
@@ -63,13 +66,6 @@
        </property>
       </widget>
      </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="l_min_ratio">
-       <property name="text">
-        <string>Процент совпадения</string>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="1">
       <widget class="QComboBox" name="cb_encoding">
        <property name="editable">
@@ -87,20 +83,48 @@
        </item>
       </widget>
      </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="l_min_ratio">
+       <property name="toolTip">
+        <string>Совпадения ниже этого процента будут посвечены красным цветом</string>
+       </property>
+       <property name="text">
+        <string>Процент совпадения</string>
+       </property>
+      </widget>
+     </item>
      <item row="5" column="1">
-      <widget class="QSpinBox" name="sb_min_ratio">
+      <widget class="QDoubleSpinBox" name="sb_min_ratio">
+       <property name="toolTip">
+        <string>Совпадения ниже этого процента будут посвечены красным цветом</string>
+       </property>
        <property name="suffix">
-        <string> %</string>
+        <string>%</string>
        </property>
        <property name="maximum">
-        <number>100</number>
-       </property>
-       <property name="value">
-        <number>50</number>
+        <double>100.000000000000000</double>
        </property>
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Несравниваемые фразы</string>
+     </property>
+     <property name="flat">
+      <bool>false</bool>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QTextEdit" name="te_excepted_words"/>
+      </item>
+     </layout>
+    </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="button_box">
