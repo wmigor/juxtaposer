@@ -88,9 +88,7 @@ class Ui_ConfigDialog(object):
         self.l_encoding.setText(_translate("ConfigDialog", "Кодировка"))
         self.cb_encoding.setItemText(0, _translate("ConfigDialog", "cp1251"))
         self.cb_encoding.setItemText(1, _translate("ConfigDialog", "utf-8"))
-        self.l_min_ratio.setToolTip(_translate("ConfigDialog", "Совпадения ниже этого процента будут посвечены красным цветом"))
         self.l_min_ratio.setText(_translate("ConfigDialog", "Процент совпадения"))
-        self.sb_min_ratio.setToolTip(_translate("ConfigDialog", "Совпадения ниже этого процента будут посвечены красным цветом"))
         self.sb_min_ratio.setSuffix(_translate("ConfigDialog", "%"))
         self.groupBox.setTitle(_translate("ConfigDialog", "Несравниваемые фразы"))
 

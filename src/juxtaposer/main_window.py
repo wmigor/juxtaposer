@@ -64,10 +64,10 @@ class MainWindow(QMainWindow):
 		try:
 			data = utility.read_csv(file_name, self._config.encoding)
 			self._table.set_data(data)
+			self._is_juxtaposed = False
 			self._update_table()
 			self._ui.table_widget.resizeColumnsToContents()
 			self._ui.table_widget.resizeRowsToContents()
-			self._is_juxtaposed = False
 		except Exception as e:
 			print(e)
 			message = "Не удалось открыть файл. Попробуйте в настройках изменить кодировку"
@@ -79,7 +79,7 @@ class MainWindow(QMainWindow):
 		self._ui.table_widget.setColumnCount(column_count)
 		for row, words in enumerate(self._table.rows):
 			color = self.get_color_by_ratio(words.ratio)
-			tool_tip = "Совпадение {0}%".format(int(words.ratio * 100))
+			tool_tip = "Совпадение {0}%".format(round(words.ratio * 100, 2))
 			for column, word in enumerate(words):
 				item = self.create_table_item(word)
 				if self._is_juxtaposed:
@@ -103,7 +103,7 @@ class MainWindow(QMainWindow):
 
 	def _juxtapose(self):
 		self._table.juxtapose(
-			self._config.column1, self._config.column2, self._config.start, self._config.end, 0,
+			self._config.column1, self._config.column2, self._config.start, self._config.end, self._config.min_ratio,
 			self._config.excepted_words)
 		self._is_juxtaposed = True
 		self._update_table()
